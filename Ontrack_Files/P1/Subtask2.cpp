@@ -28,6 +28,7 @@ void is_sorted(double arr[], int n)
         if (arr[i] < arr[i - 1])
         {
             is_sorted = false;
+            break;
         }
     }
     if (is_sorted)
