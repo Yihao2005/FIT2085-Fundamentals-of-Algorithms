@@ -3,9 +3,11 @@
 
 using namespace std;
 
+const int ARRAY_SIZE = 100;
+
 struct Node {
     // Implement as you need
-    int arr[100];
+    int arr[ARRAY_SIZE];
     Node* next;
 };
 
@@ -13,7 +15,6 @@ struct PointingLinkedArrays {
     Node* first_node = nullptr;
     int size = 0;
     int node_size = 0;
-
     int get_size() {
         // ...
         return size;
@@ -24,7 +25,7 @@ struct PointingLinkedArrays {
     // last node. Therefore, the time complexity is Linear.
     void append(int value) {
         // ...
-        if (size%100 == 0)
+        if (size%ARRAY_SIZE == 0)
         {
             Node* new_node = new Node();
             new_node->arr[0] = value;
@@ -50,7 +51,7 @@ struct PointingLinkedArrays {
         {
             current_node = current_node->next;
         }
-        current_node->arr[size%100] = value;
+        current_node->arr[size%ARRAY_SIZE] = value;
         size++;
 
     }
@@ -60,8 +61,8 @@ struct PointingLinkedArrays {
     // the index.
     int get_index(int index) {
         // ...
-        int node_number = index/100;
-        int index_node = index%100;
+        int node_number = index/ARRAY_SIZE;
+        int index_node = index%ARRAY_SIZE;
         Node* current_node = first_node;
         for (int i = node_number; i > 0; i--)
         {
@@ -71,8 +72,8 @@ struct PointingLinkedArrays {
     }
     void set_index(int index, int new_value) {
         // ...
-        int node_number = index/100;
-        int index_node = index%100;
+        int node_number = index/ARRAY_SIZE;
+        int index_node = index%ARRAY_SIZE;
         Node* current_node = first_node;
         for (int i = node_number; i > 0; i--)
         {
@@ -84,6 +85,12 @@ struct PointingLinkedArrays {
 
 int main() {
     PointingLinkedArrays list;
+    for (int i=0;i <200; i++)
+    {
+        list.append(i);
+    }
+
+
     string menu = "1. Append a new item\n2. Get value of an index\n3. Set value of an index\n4. See the current size\n5. See the menu again\n6. Quit";
     int command = 5;
 
