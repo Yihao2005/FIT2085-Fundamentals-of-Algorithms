@@ -54,6 +54,7 @@ int estimate_selection_cost(int n, int mem_write_cost, int mem_read_cost, int me
 }
 
 // Insertion Sort
+/**
 void insertion_sort(Post posts[], int n)
 {
     for (int first_unsorted_index = 0; first_unsorted_index < n; first_unsorted_index++)
@@ -77,7 +78,35 @@ int estimate_insertion_cost(int n, int mem_write_cost, int mem_read_cost, int me
 
     return calculate_cost(mem_write_cost, mem_read_cost, mem_store_cost, write_count, read_count, store_count);
 }
+**/
 
+void insertion_sort(Post posts[], int n)
+{
+    for (int first_unsorted_index = 0; first_unsorted_index < n; first_unsorted_index++)
+    {
+        int current_index = first_unsorted_index;
+        Post temp_post = posts[current_index];
+        while (current_index - 1 >=0 &&
+                    (temp_post.likes > posts[current_index - 1].likes
+                     || (posts[current_index - 1].likes == temp_post.likes && posts[current_index - 1].posted_timestamp > temp_post.posted_timestamp)   ))
+        {
+            posts[current_index] = posts[current_index - 1];
+            current_index --;
+        }
+
+        posts[current_index] = temp_post;
+
+    }
+}
+
+int estimate_insertion_cost(int n, int mem_write_cost, int mem_read_cost, int mem_store_cost)
+{
+    int read_count = (n-1) + n*(n-1);
+    int write_count = (n-1) + n * (n-1)/2;
+    int store_count = 0;
+
+    return calculate_cost(mem_write_cost, mem_read_cost, mem_store_cost, write_count, read_count, store_count);
+}
 // Bubble Sort
 void bubble_sort(Post posts[], int n)
 {
@@ -157,7 +186,7 @@ int main() {
         posts[i].posted_timestamp = i;
     }
 
-    int cost = sort_posts(posts, 10, 1, 1, 1);
+    int cost = sort_posts(posts, 10, 1, 20, 1);
 
     cout << "Cost of sorting was " << cost << endl;
     cout << "# likes are:" << endl;
