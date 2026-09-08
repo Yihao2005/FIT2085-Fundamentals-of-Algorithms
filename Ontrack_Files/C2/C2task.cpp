@@ -11,7 +11,7 @@ using namespace std;
 
 struct PostAnalyser {
     // ...
-    LinkedList<Batch> batches;
+    LinkedList<Batch<Post>> batches;
     int batch_size;
 
     PostAnalyser(int n) {
@@ -23,21 +23,16 @@ struct PostAnalyser {
     void add_batch(Post* post_batch) {
         // ...
         merge_sort(post_batch, batch_size);
-        Batch batch(post_batch, batch_size);
+        Batch<Post> batch(post_batch, batch_size);
         batches.append(batch);
     }
 
     void remove_post(Post post) {
         // ...
-        Node<Batch>* current_node = batches.first_node;
+        Node<Batch<Post>>* current_node = batches.first_node;
         while (current_node != nullptr)
         {
-            int target_index = binary_search(current_node->item.posts, 0, current_node->item.size-1,post);
-            if (target_index != -1)
-            {
-                current_node->item.remove_post(target_index);
-                return;
-            }
+            current_node->item.delete_item(post);
             current_node = current_node->next;
 
         }
@@ -46,23 +41,24 @@ struct PostAnalyser {
     Post* least_popular_over_threshold(int threshold)
     {
         // ...
-        Post post;
-        post.likes = threshold;
-        post.post_name = "threshold";
+       Node<Batch<Post>>* current_node = batches.first_node;
 
-        Node<Batch>* current_node = batches.first_node;
         Post* result = nullptr;
+        Post threshold_post;
+        threshold_post.likes = threshold;
+        threshold_post.post_name = "Threshold";
+
 
         while (current_node != nullptr)
         {
-            int index = binary_search_threshold(current_node->item.posts, 0, current_node->item.size-1,post);
+            Post* post = current_node->item.least_over_threshold(threshold_post);
 
-            if (index != -1)
+            if (post != nullptr)
             {
-                if (result == nullptr || current_node->item.posts[index].likes < result->likes)
-                {
-                    result = &current_node->item.posts[index];
-                }
+               if ( result == nullptr || post->likes < result->likes)
+               {
+                   result = post;
+               }
             }
             current_node = current_node->next;
         }

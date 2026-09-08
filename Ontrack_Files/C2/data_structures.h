@@ -53,6 +53,7 @@ struct Post {
     }
 };
 
+/*
 struct Batch
 {
     Post* posts;
@@ -132,6 +133,7 @@ struct Batch
 
 
 };
+*/
 
 template<typename T>
 struct Node
@@ -178,6 +180,200 @@ struct LinkedList
             current = next;
         }
     }
+};
+
+template<typename T>
+struct Batch_Node
+{
+    T item;
+    Batch_Node<T>* left;
+    Batch_Node<T>* right;
+};
+
+template<typename T>
+struct Batch
+{
+    Batch_Node<T>* root;
+    int size;
+
+    Batch()
+    {
+        this->root = nullptr;
+        this->size = 0;
+    }
+
+   Batch_Node<T>* build_balanced_tree(T* items, int left, int right)
+    {
+        if (left > right)
+        {
+            return nullptr;
+        }
+
+        int mid = (left + right) / 2;
+
+        Batch_Node<T>* node = new Batch_Node<T>;
+        node->item = items[mid];
+
+        node->left = build_balanced_tree(items, left, mid - 1);
+        node->right = build_balanced_tree(items, mid + 1, right);
+
+        return node;
+    }
+
+    Batch(T* items, int size)
+    {
+        this->size = size;
+
+        this->root = build_balanced_tree(items, 0, size - 1);
+    }
+
+    Batch_Node<T>* copy_batch(Batch_Node<T>* node)
+    {
+        if (node == nullptr)
+        {
+            return nullptr;
+        }
+
+        Batch_Node<T>* new_node = new Batch_Node<T>;
+        new_node->item = node->item;
+
+        new_node->left = copy_batch(node->left);
+        new_node->right = copy_batch(node->right);
+
+        return new_node;
+    }
+
+    Batch(const Batch<T>& batch)
+    {
+        this->size = batch.size;
+        this->root = copy_batch(batch.root);
+    }
+
+    void delete_batch(Batch_Node<T>* node)
+    {
+        if (node == nullptr)
+        {
+            return;
+        }
+
+        delete_batch(node->right);
+        delete_batch(node->left);
+
+        delete node;
+    }
+
+    ~Batch()
+    {
+        delete_batch(root);
+    }
+
+    Batch& operator=(const Batch& batch)
+    {
+        if (this != &batch)
+        {
+            delete_batch(this->root);
+
+            this->size = batch.size;
+            this->root = copy_batch(batch.root);
+        }
+
+        return *this;
+    }
+
+    Batch_Node<T>* find_min(Batch_Node<T>* current_node)
+    {
+        while (current_node -> left != nullptr)
+        {
+            current_node = current_node -> left;
+        }
+
+        return current_node;
+    }
+
+    Batch_Node<T>* delete_helper(Batch_Node<T>* current_node, T item)
+    {
+        if (current_node == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (item < current_node->item)
+        {
+            current_node->left = delete_helper(current_node->left, item);
+
+            return current_node;
+        }
+
+        if (item > current_node->item)
+        {
+            current_node->right = delete_helper(current_node->right, item);
+
+            return current_node;
+        }
+
+        // Found target
+
+        // 0 children
+        if (
+            current_node->left == nullptr &&
+            current_node->right == nullptr)
+        {
+            delete current_node;
+            return nullptr;
+        }
+
+        // only right children
+        if (current_node -> left == nullptr)
+        {
+            Batch_Node<T>* replacement = current_node->right;
+            delete current_node;
+            return replacement;
+        }
+
+        // only left children
+        if (current_node -> right == nullptr)
+        {
+            Batch_Node<T>* replacement = current_node->left;
+            delete current_node;
+            return replacement;
+        }
+
+        // 2 children
+        Batch_Node<T>* successor = find_min(current_node->right);
+
+        current_node -> item = successor->item;
+
+        current_node -> right = delete_helper(current_node->right, successor->item);
+
+        return current_node;
+    }
+
+    void delete_item(T item)
+    {
+        root = delete_helper(root, item);
+    }
+
+    T* least_over_threshold(T threshold)
+    {
+        Batch_Node<T>* current_node = root;
+        T* result = nullptr;
+
+        while (current_node != nullptr)
+        {
+            if (current_node->item > threshold)
+            {
+                result = &current_node -> item;
+
+                current_node = current_node -> left;
+            }else
+            {
+                current_node = current_node -> right;
+            }
+        }
+
+        return result;
+    }
+
 };
 
 
