@@ -299,7 +299,7 @@ int ontrack_test() {
     return 0;
 }
 
-/*
+
 int main(int argc, char** argv) {
     if (argc == 2) return ontrack_test();
 
@@ -325,11 +325,11 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-*/
+
 
 
 // Tests:
-
+/*
 int main()
 {
     BinarySearchTree<string> bst;
@@ -522,4 +522,4 @@ int main()
     return 0;
 }
 
-
+*/
