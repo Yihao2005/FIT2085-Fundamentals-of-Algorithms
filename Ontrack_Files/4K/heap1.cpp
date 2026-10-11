@@ -117,20 +117,56 @@ struct MinHeap
     }
 };
 
+/*
+ * We process the questions in their original order.
+ * The min heap holds the scores of the currently selected questions.
+ * Total is the sum of those scores.
+ *
+ * The heap is used to find the minimum selected score, and it
+ * doesn't change the order in which the retained questions are attempted.
+ *
+ * Before processing a new question, every prefix of the retained sequence has a non negative value.
+ * Adding the new question only introduces one prefix: the whole retained sequence
+ * ending at that question.
+ *
+ * If the sum is negative, the new score must be negative.
+ * Let the S be the total before adding new score (S >= 0),
+ * X be the new score,
+ * M be the minimum score in the MinHeap.
+ * Since M<=X, S + X < 0,
+ * therefore, S + X - M = S + ( X - M ) >= 0.
+ *
+ * M is negative. Removing it leaves prefix sums before its
+ * position unchanged and increases those after its position.
+ * Therefore, every retained prefix remains non-negative.
+ *
+ * Above all, we could prove that one removal is sufficient.
+ *
+ * When the total becomes negative, we cannot keep all currently
+ * selected questions, so a removal is necessary.
+ * Removing M restores validity with one removal and gives the
+ * largest remaining total among all single-removal choices.
+ * This leaves the most room for future negative scores.
+ */
 int main()
 {
     MinHeap heap;
     int n;
-    cin >> n;
+    cin >> n; // the total number of questions on test
     long long total = 0;
     for (int i = 0; i < n; i++)
     {
         long long val;
-        cin >> val;
+        cin >> val; // the expected mark of ith question
+
+        // temporarily keep the current question
         total += val;
         heap.add(val);
+
         if (total < 0)
         {
+            // Remove the smallest selected score to achieve
+            // largest increment in total from removing one question
             long long min = heap.extract_min();
             total -= min;
         }
