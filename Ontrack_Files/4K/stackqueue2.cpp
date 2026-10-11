@@ -116,7 +116,7 @@ struct Queue
  * otherwise, the algorithm stops in a state where completion is impossible.
  *
  * Each student enter and leave the first queue at most once, and is pushed onto and popped from the stack at most once.
- * Each operation tasks O(1) time, so the total time complexity is O(n).
+ * Each operation takes O(1) time, so the total time complexity is O(n).
  */
 int main()
 {
@@ -173,8 +173,8 @@ int main()
         else
         {
             // The first queue is empty and the stack top is not i.
-            // Student i is blocked inside the stack. The blocking students before i could not
-            // check-in, so complete check-in is impossible.
+            // Student i is blocked inside the stack. The blocking students above i could not
+            // check-in before i, so complete check-in is impossible.
             break;
         }
     }
