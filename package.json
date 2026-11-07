@@ -1,0 +1,21 @@
+{
+  "name": "fit2085-study-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs"
+  },
+  "dependencies": {
+    "marked": "17.0.5",
+    "highlight.js": "10.7.3"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2"
+  }
+}
